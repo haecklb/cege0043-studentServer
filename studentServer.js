@@ -18,7 +18,7 @@ app.get('/',function(req,res){
 
 var bodyParser=require('body-parser');
 app.use(bodyParser.urlencoded({
-	extended:true
+	extended: true
 }));
 app.use(bodyParser.json());
 
@@ -27,11 +27,10 @@ var pg=require('pg');
 
 var configtext=""+fs.readFileSync("/home/studentuser/certs/postGISConnection.js");
 
-//now convert the configuration file into the correct format -i.e. a name/value
-pair array
+//now convert the configuration file into the correct format -i.e. a name/value pair array
 var configarray=configtext.split(",");
 var config={};
-for (var i = 0; i < configarray.length; i++){
+for (var i=0; i<configarray.length; i++){
 	var split=configarray[i].split(':');
 	config[split[0].trim()]=split[1].trim();
 }
@@ -45,7 +44,7 @@ app.get('/postgistest', function(req,res){
 			console.log("not able to get connection "+ err);
 			res.status(400).send(err);
 		}
-		client.query('SELECT name FROM london_poi' , function(err,result){
+		client.query('SELECT name FROM london_poi' ,function(err,result){
 			done();
 			if(err){
 				console.log(err);

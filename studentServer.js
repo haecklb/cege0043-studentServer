@@ -176,7 +176,7 @@ app.get('/getGeoJSON/:tablename/:geomcolumn/:portNumber?', function(req,res){
 
  			// depending on whether we have a port number, do differen things
  			if (req.params.portNumber) {
- 				querystring = querystring + " FROM "+req.params.tablename+"As lg where lg.port_id = '"+req.params.portNumber + "' limit 100 ) As f ";
+ 				querystring = querystring + " FROM "+req.params.tablename+" As lg where lg.port_id = '"+req.params.portNumber + "' limit 100 ) As f ";
  			}
  			else {
  				querystring = querystring + " FROM "+req.params.tablename+" As lg limit 100 ) As f ";

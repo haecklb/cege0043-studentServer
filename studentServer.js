@@ -144,12 +144,12 @@ app.get('/getGeoJSON/:tablename/:geomcolumn/:portNumber?', function(req,res){
 		var colnames="";
 		//first get a list of the columns that are in the table
 		//use string_agg to generate a comma separated list that can then be pasted into the next query
-		var tablename=req.params.tablename;
-		var geomcolumn=req.params.geomcolumn;
-		var querystring="select string_agg(colname, ',') from (select column_name as colname";
-		querystring=querystring + "FROM information_schema.columns as colname ";
-		querystring=querystring + "where table_name =$1";
-		querystring=querystring + " and column_name <> $2 and data_type <> 'USER-DEFINED') as cols";
+		var tablename = req.params.tablename;
+ 		var geomcolumn = req.params.geomcolumn;
+ 		var querystring = "select string_agg(colname,',') from ( select column_name as colname ";
+ 		querystring = querystring + " FROM information_schema.columns as colname ";
+ 		querystring = querystring + " where table_name =$1";
+ 		querystring = querystring + " and column_name <> $2 and data_type <> 'USER-DEFINED') as cols "; 
 
 		console.log(querystring);
 
@@ -170,14 +170,18 @@ app.get('/getGeoJSON/:tablename/:geomcolumn/:portNumber?', function(req,res){
 			//http://www.postgresonline.com/journal/archives/267-CreatingGeoJSON-Feature-Collections-with-JSON-and-PostGIS-functions.html
 			//note that the query needs to be a single string with no line breaks so we build it up bit by bit
 
-			var querystring = " SELECT 'FeatureCollection' As type,array_to_json(array_agg(f)) As features FROM ";
- 			querystring = querystring + "(SELECT 'Feature' As type ,ST_AsGeoJSON(lg." + req.params.geomcolumn +")::json As geometry, ";
- 			querystring = querystring + "row_to_json((SELECT l FROM (SELECT "+colnames+") As l  )) As properties";
-			
- 			//depending on whether we have a port number, do different things
- 			if(req.params.portNumber){
- 				querystring=querystring + " FROM"+req.params.tablename+" As lg where lg.port_id='"+req.params.portNumber+"' limit 100 ) As f";
+			var querystring = " SELECT 'FeatureCollection' As type, array_to_json(array_agg(f)) As features FROM ";
+ 			querystring = querystring + "(SELECT 'Feature' As type ,ST_AsGeoJSON(lg." + req.params.geomcolumn+")::json As geometry, ";
+ 			querystring = querystring + "row_to_json((SELECT l FROM (SELECT "+colnames + ") As l )) As properties";
+
+ 			// depending on whether we have a port number, do differen things
+ 			if (req.params.portNumber) {
+ 				querystring = querystring + " FROM "+req.params.tablename+"As lg where lg.port_id = '"+req.params.portNumber + "' limit 100 ) As f ";
  			}
+ 			else {
+ 				querystring = querystring + " FROM "+req.params.tablename+" As lg limit 100 ) As f ";
+ 			} 
+
  			console.log(querystring);
 
  			//run the second query

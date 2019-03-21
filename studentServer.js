@@ -52,7 +52,7 @@ app.get('/postgistest', function(req,res){
 			console.log("not able to get connection "+ err);
 			res.status(400).send(err);
 		}
-		client.query('SELECT name FROM london_poi' ,function(err,result){
+		client.query('SELECT question_title FROM public.quizquestion' ,function(err,result){
 			done();
 			if(err){
 				console.log(err);
